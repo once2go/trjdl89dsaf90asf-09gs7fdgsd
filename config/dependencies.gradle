@@ -1,0 +1,70 @@
+allprojects {
+    repositories {
+        jcenter()
+    }
+}
+
+ext {
+    androidBuildToolsVersion = '23.0.3'
+    androidMinSdkVersion = 15
+    androidTargetSdkVersion = 23
+    androidCompileSdkVersion = 23
+
+    supportLibVersion = '23.4.0'
+
+    daggerVersion = '2.4'
+    javaxAnnotationVersion = '10.0-b28'
+
+    rxJavaVersion = '1.1.7'
+    rxAndroidVersion = '1.2.1'
+
+    gsonVersion = '2.6.2'
+    retrofitVersion = '2.0.2'
+
+    picassoVersion = '2.5.2'
+
+    presentationDependencies = [
+            supportDesign     : "com.android.support:design:${supportLibVersion}",
+            appCompatV7       : "com.android.support:appcompat-v7:${supportLibVersion}",
+            supportAnnotations: "com.android.support:support-annotations:${supportLibVersion}",
+            recyclerView      : "com.android.support:recyclerview-v7:${supportLibVersion}",
+
+            daggerCompiler    : "com.google.dagger:dagger-compiler:${daggerVersion}",
+            dagger            : "com.google.dagger:dagger:${daggerVersion}",
+            javaxAnnotation   : "org.glassfish:javax.annotation:${javaxAnnotationVersion}",
+
+            rxJava            : "io.reactivex:rxjava:${rxJavaVersion}",
+            rxAndroid         : "io.reactivex:rxandroid:${rxAndroidVersion}",
+
+            retrofit          : "com.squareup.retrofit2:retrofit:${retrofitVersion}",
+            retrofitConvGson  : "com.squareup.retrofit2:converter-gson:${retrofitVersion}",
+            retrofitAdapterRx : "com.squareup.retrofit2:adapter-rxjava:${retrofitVersion}",
+            picasso           : "com.squareup.picasso:picasso:${picassoVersion}"
+    ]
+
+    domainDependencies = [
+            daggerCompiler : "com.google.dagger:dagger-compiler:${daggerVersion}",
+            dagger         : "com.google.dagger:dagger:${daggerVersion}",
+            javaxAnnotation: "org.glassfish:javax.annotation:${javaxAnnotationVersion}",
+            rxJava         : "io.reactivex:rxjava:${rxJavaVersion}",
+    ]
+
+    modelDependencies = [
+            supportDesign     : "com.android.support:design:${supportLibVersion}",
+            supportV7         : "com.android.support:appcompat-v7:${supportLibVersion}",
+            supportAnnotations: "com.android.support:support-annotations:${supportLibVersion}",
+            recyclerView      : "com.android.support:recyclerview-v7:${supportLibVersion}",
+
+            daggerCompiler    : "com.google.dagger:dagger-compiler:${daggerVersion}",
+            dagger            : "com.google.dagger:dagger:${daggerVersion}",
+            javaxAnnotation   : "org.glassfish:javax.annotation:${javaxAnnotationVersion}",
+
+            rxJava            : "io.reactivex:rxjava:${rxJavaVersion}",
+            rxAndroid         : "io.reactivex:rxandroid:${rxAndroidVersion}",
+
+            retrofit          : "com.squareup.retrofit2:retrofit:${retrofitVersion}",
+            retrofitConvGson  : "com.squareup.retrofit2:converter-gson:${retrofitVersion}",
+            retrofitAdapterRx : "com.squareup.retrofit2:adapter-rxjava:${retrofitVersion}",
+    ]
+
+}

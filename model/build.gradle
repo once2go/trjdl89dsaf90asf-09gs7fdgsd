@@ -1,5 +1,6 @@
-apply plugin: 'com.android.application'
+apply plugin: 'com.android.library'
 apply plugin: 'com.neenbedankt.android-apt'
+
 
 android {
     def globalConfiguration = rootProject.extensions.getByName("ext")
@@ -8,23 +9,11 @@ android {
     buildToolsVersion globalConfiguration.getAt("androidBuildToolsVersion")
 
     defaultConfig {
-        applicationId globalConfiguration.getAt("applicationId")
         minSdkVersion globalConfiguration.getAt("androidMinSdkVersion")
         targetSdkVersion globalConfiguration.getAt("androidTargetSdkVersion")
         versionCode globalConfiguration.getAt("applicationVersionCode")
     }
-    buildTypes {
-        release {
-            debuggable false
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
-        debug {
-            debuggable true
-            minifyEnabled false
-            applicationIdSuffix '.debug'
-        }
-    }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_7
         targetCompatibility JavaVersion.VERSION_1_7
@@ -32,20 +21,16 @@ android {
 }
 
 dependencies {
-    compile project(':model')
-    compile project(':domain')
+    def dataDependencies = rootProject.ext.modelDependencies
 
-    def dataDependencies = rootProject.ext.presentationDependencies
-
-    compile dataDependencies.supportDesign
-    compile dataDependencies.appCompatV7
     compile dataDependencies.retrofit
     compile dataDependencies.retrofitConvGson
     compile dataDependencies.retrofitAdapterRx
+
     compile dataDependencies.javaxAnnotation
     compile dataDependencies.dagger
     apt dataDependencies.daggerCompiler
+
     compile dataDependencies.rxJava
     compile dataDependencies.rxAndroid
-    compile dataDependencies.picasso
 }

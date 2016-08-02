@@ -16,4 +16,16 @@ public class Movie {
     @SerializedName("ids")
     private Ids mIds;
 
+
+    public String getTitle() {
+        return mTitle;
+    }
+
+    public int getYear() {
+        return mYear;
+    }
+
+    public Ids getIds() {
+        return mIds;
+    }
 }

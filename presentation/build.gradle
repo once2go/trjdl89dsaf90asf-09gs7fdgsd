@@ -39,6 +39,7 @@ dependencies {
 
     compile dataDependencies.supportDesign
     compile dataDependencies.appCompatV7
+    compile dataDependencies.cardView
     compile dataDependencies.retrofit
     compile dataDependencies.retrofitConvGson
     compile dataDependencies.retrofitAdapterRx

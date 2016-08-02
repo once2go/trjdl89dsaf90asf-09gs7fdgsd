@@ -2,6 +2,7 @@ package com.once2go.ttv.views.fragments;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -25,7 +26,6 @@ import java.util.List;
 public class PopularMovieFragment extends Fragment implements PopularMovieView {
 
     private PopularMovieViewPresenter mPopularMovieViewPresenter;
-
     private RecyclerView mListView;
     private List<Movie> mItemsList = new ArrayList<>();
     private MovieAdapter mAdapter;
@@ -37,8 +37,13 @@ public class PopularMovieFragment extends Fragment implements PopularMovieView {
         assignViews(view);
         mPopularMovieViewPresenter = DaggerPopularMovieComponent.create().getPresenter();
         mPopularMovieViewPresenter.setView(this);
-        mPopularMovieViewPresenter.onLoadPopularMovie();
         return view;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        mPopularMovieViewPresenter.onLoadPopularMovie();
     }
 
     private void assignViews(View view) {
@@ -65,6 +70,9 @@ public class PopularMovieFragment extends Fragment implements PopularMovieView {
 
     @Override
     public void showError(String message) {
-
+        View v = getView();
+        if (v != null) {
+            Snackbar.make(getView(), message, Snackbar.LENGTH_SHORT).show();
+        }
     }
 }

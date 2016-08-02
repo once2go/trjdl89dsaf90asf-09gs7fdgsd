@@ -2,13 +2,13 @@ package com.once2go.ttv.presenters.implementations;
 
 import android.support.annotation.NonNull;
 
-import com.once2go.ttv.presenters.PopularMovieVIewPresenter;
+import com.once2go.ttv.presenters.PopularMovieViewPresenter;
 import com.once2go.ttv.views.PopularMovieView;
 
 /**
  * Created by once2go on 02.08.16.
  */
-public class PopularMovieViewPresenterImpl implements PopularMovieVIewPresenter {
+public class PopularMovieViewPresenterImpl implements PopularMovieViewPresenter {
 
     @Override
     public void onLoadPopularMovie() {

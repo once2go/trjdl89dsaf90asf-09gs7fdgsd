@@ -9,13 +9,10 @@ import rx.Observable;
 /**
  * Created by once2go on 02.08.16.
  */
-public class GetPopularMoviesUseCase extends UseCase<List<Movie>> {
-
-    public GetPopularMoviesUseCase() {
-    }
+public class GetPopularMoviesUseCase extends PaginatedUseCase<List<Movie>> {
 
     @Override
     protected Observable<List<Movie>> buildUseCaseObservable() {
-        return serverApi.getPopularMovies();
+        return serverApi.getPopularMovies(page, limit);
     }
 }

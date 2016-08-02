@@ -1,8 +1,11 @@
 package com.once2go.ttv.presenters.implementations;
 
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.once2go.domain.interactors.GetPopularMoviesUseCase;
+import com.once2go.model.Config;
+import com.once2go.model.Flag;
 import com.once2go.model.movies.Movie;
 import com.once2go.ttv.presenters.PopularMovieViewPresenter;
 import com.once2go.ttv.views.PopularMovieView;
@@ -22,7 +25,10 @@ public class PopularMovieViewPresenterImpl implements PopularMovieViewPresenter 
     private Subscriber<List<Movie>> mPopularMovieSubscription = new Subscriber<List<Movie>>() {
         @Override
         public void onCompleted() {
-
+            if (mGetPopularMoviesUseCase != null) {
+                mGetPopularMoviesUseCase.unsubscribe();
+                mGetPopularMoviesUseCase = null;
+            }
         }
 
         @Override
@@ -42,8 +48,17 @@ public class PopularMovieViewPresenterImpl implements PopularMovieViewPresenter 
 
     @Override
     public void onLoadPopularMovie() {
-        mGetPopularMoviesUseCase = new GetPopularMoviesUseCase();
-        mGetPopularMoviesUseCase.execute(mPopularMovieSubscription);
+        loadMovieList(Flag.EMPTY_VALUE, Flag.EMPTY_VALUE);
+    }
+
+    @Override
+    public void onLoadPopularMovie(int page) {
+        loadMovieList(page, Flag.EMPTY_VALUE);
+    }
+
+    @Override
+    public void onLoadPopularMovie(int page, int limit) {
+        loadMovieList(page, limit);
     }
 
     @Override
@@ -59,6 +74,32 @@ public class PopularMovieViewPresenterImpl implements PopularMovieViewPresenter 
     @Override
     public void pause() {
 
+    }
+
+    private void loadMovieList(int page, int limit) {
+        mGetPopularMoviesUseCase = new GetPopularMoviesUseCase();
+        if (limit == Flag.EMPTY_VALUE && page != Flag.EMPTY_VALUE) {
+            mGetPopularMoviesUseCase.setQueryCredentials(page);
+        }
+        if (limit != Flag.EMPTY_VALUE && page != Flag.EMPTY_VALUE) {
+            mGetPopularMoviesUseCase.setQueryCredentials(page, limit);
+        }
+        mGetPopularMoviesUseCase.execute(new Subscriber<List<Movie>>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(List<Movie> movies) {
+                mPopularMovieView.onMovieListLoaded(movies);
+            }
+        });
     }
 
     @Override

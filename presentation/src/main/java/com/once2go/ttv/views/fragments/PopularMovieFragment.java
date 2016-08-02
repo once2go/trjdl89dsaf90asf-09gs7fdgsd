@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,7 +18,6 @@ import com.once2go.ttv.presenters.di.components.DaggerPopularMovieComponent;
 import com.once2go.ttv.views.PopularMovieView;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -29,6 +29,10 @@ public class PopularMovieFragment extends Fragment implements PopularMovieView {
     private RecyclerView mListView;
     private List<Movie> mItemsList = new ArrayList<>();
     private MovieAdapter mAdapter;
+    private boolean mLoadingInProgress;
+    private boolean mEndOfTheList;
+    private int pageCounter;
+    private static final int LOAD_ITEMS_OFFSET = 3;
 
     @Nullable
     @Override
@@ -43,17 +47,37 @@ public class PopularMovieFragment extends Fragment implements PopularMovieView {
     @Override
     public void onStart() {
         super.onStart();
-        mPopularMovieViewPresenter.onLoadPopularMovie();
+        pageCounter++;
+        mPopularMovieViewPresenter.onLoadPopularMovie(pageCounter);
     }
 
     private void assignViews(View view) {
         mListView = (RecyclerView) view.findViewById(R.id.popular_movie_list_view);
         mAdapter = new MovieAdapter(mItemsList);
         mListView.setAdapter(mAdapter);
+        final LinearLayoutManager layoutManager = (LinearLayoutManager) mListView.getLayoutManager();
+        mListView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if (!mEndOfTheList && !mItemsList.isEmpty() && dy > 0 && !mLoadingInProgress) {
+                    int visibleItemCount = layoutManager.getChildCount();
+                    int totalItemCount = layoutManager.getItemCount();
+                    int pastVisibleItems = layoutManager.findFirstVisibleItemPosition();
+                    if ((visibleItemCount + pastVisibleItems) + LOAD_ITEMS_OFFSET >= totalItemCount) {
+                        mLoadingInProgress = true;
+                        pageCounter++;
+                        mPopularMovieViewPresenter.onLoadPopularMovie(pageCounter);
+                    }
+                }
+            }
+        });
     }
+
 
     @Override
     public void onMovieListLoaded(List<Movie> movieList) {
+        mLoadingInProgress = false;
         mItemsList.addAll(movieList);
         mAdapter.notifyDataSetChanged();
     }
@@ -74,5 +98,14 @@ public class PopularMovieFragment extends Fragment implements PopularMovieView {
         if (v != null) {
             Snackbar.make(getView(), message, Snackbar.LENGTH_SHORT).show();
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        if (mPopularMovieViewPresenter != null) {
+            mPopularMovieViewPresenter.destroy();
+            mPopularMovieViewPresenter = null;
+        }
+        super.onDestroy();
     }
 }

@@ -1,12 +1,11 @@
 package com.once2go.ttv.presenters.implementations;
 
 import android.support.annotation.NonNull;
-import android.util.Log;
 
-import com.once2go.domain.interactors.GetPopularMoviesUseCase;
-import com.once2go.model.Config;
+import com.once2go.domain.interactors.GetPopularMovieWithExtensionUseCase;
 import com.once2go.model.Flag;
-import com.once2go.model.movies.Movie;
+import com.once2go.model.ObjectExtension;
+import com.once2go.model.movies.ReachMovie;
 import com.once2go.ttv.presenters.PopularMovieViewPresenter;
 import com.once2go.ttv.views.PopularMovieView;
 
@@ -20,31 +19,7 @@ import rx.Subscriber;
 public class PopularMovieViewPresenterImpl implements PopularMovieViewPresenter {
 
     private PopularMovieView mPopularMovieView;
-    private GetPopularMoviesUseCase mGetPopularMoviesUseCase;
-
-    private Subscriber<List<Movie>> mPopularMovieSubscription = new Subscriber<List<Movie>>() {
-        @Override
-        public void onCompleted() {
-            if (mGetPopularMoviesUseCase != null) {
-                mGetPopularMoviesUseCase.unsubscribe();
-                mGetPopularMoviesUseCase = null;
-            }
-        }
-
-        @Override
-        public void onError(Throwable e) {
-            if (mPopularMovieView != null) {
-                mPopularMovieView.showError(e.getMessage());
-            }
-        }
-
-        @Override
-        public void onNext(List<Movie> movieList) {
-            if (mPopularMovieView != null) {
-                mPopularMovieView.onMovieListLoaded(movieList);
-            }
-        }
-    };
+    private GetPopularMovieWithExtensionUseCase mGetPopularMoviesUseCase;
 
     @Override
     public void onLoadPopularMovie() {
@@ -77,27 +52,34 @@ public class PopularMovieViewPresenterImpl implements PopularMovieViewPresenter 
     }
 
     private void loadMovieList(int page, int limit) {
-        mGetPopularMoviesUseCase = new GetPopularMoviesUseCase();
+        mGetPopularMoviesUseCase = new GetPopularMovieWithExtensionUseCase(ObjectExtension.FULL_INFO);
         if (limit == Flag.EMPTY_VALUE && page != Flag.EMPTY_VALUE) {
             mGetPopularMoviesUseCase.setQueryCredentials(page);
         }
         if (limit != Flag.EMPTY_VALUE && page != Flag.EMPTY_VALUE) {
             mGetPopularMoviesUseCase.setQueryCredentials(page, limit);
         }
-        mGetPopularMoviesUseCase.execute(new Subscriber<List<Movie>>() {
+        mGetPopularMoviesUseCase.execute(new Subscriber<List<ReachMovie>>() {
             @Override
             public void onCompleted() {
-
+                if (mGetPopularMoviesUseCase != null) {
+                    mGetPopularMoviesUseCase.unsubscribe();
+                    mGetPopularMoviesUseCase = null;
+                }
             }
 
             @Override
             public void onError(Throwable e) {
-
+                if (mPopularMovieView != null) {
+                    mPopularMovieView.showError(e.getMessage());
+                }
             }
 
             @Override
-            public void onNext(List<Movie> movies) {
-                mPopularMovieView.onMovieListLoaded(movies);
+            public void onNext(List<ReachMovie> movies) {
+                if (mPopularMovieView != null) {
+                    mPopularMovieView.onReachMovieListLoaded(movies);
+                }
             }
         });
     }

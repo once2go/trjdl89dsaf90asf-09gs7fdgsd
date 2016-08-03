@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -11,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.once2go.model.movies.Movie;
+import com.once2go.model.movies.ReachMovie;
 import com.once2go.ttv.R;
 import com.once2go.ttv.adapters.MovieAdapter;
 import com.once2go.ttv.presenters.PopularMovieViewPresenter;
@@ -25,9 +27,10 @@ import java.util.List;
  */
 public class PopularMovieFragment extends Fragment implements PopularMovieView {
 
+    private static final int ITEMS_IN_ROW = 3;
     private PopularMovieViewPresenter mPopularMovieViewPresenter;
     private RecyclerView mListView;
-    private List<Movie> mItemsList = new ArrayList<>();
+    private List<ReachMovie> mItemsList = new ArrayList<>();
     private MovieAdapter mAdapter;
     private boolean mLoadingInProgress;
     private boolean mEndOfTheList;
@@ -53,9 +56,10 @@ public class PopularMovieFragment extends Fragment implements PopularMovieView {
 
     private void assignViews(View view) {
         mListView = (RecyclerView) view.findViewById(R.id.popular_movie_list_view);
+        final GridLayoutManager layoutManager = new GridLayoutManager(view.getContext(), ITEMS_IN_ROW, LinearLayoutManager.VERTICAL, false);
+        mListView.setLayoutManager(layoutManager);
         mAdapter = new MovieAdapter(mItemsList);
         mListView.setAdapter(mAdapter);
-        final LinearLayoutManager layoutManager = (LinearLayoutManager) mListView.getLayoutManager();
         mListView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
@@ -77,6 +81,11 @@ public class PopularMovieFragment extends Fragment implements PopularMovieView {
 
     @Override
     public void onMovieListLoaded(List<Movie> movieList) {
+
+    }
+
+    @Override
+    public void onReachMovieListLoaded(List<ReachMovie> movieList) {
         mLoadingInProgress = false;
         mItemsList.addAll(movieList);
         mAdapter.notifyDataSetChanged();

@@ -5,7 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.once2go.model.movies.Movie;
+import com.once2go.model.movies.ReachMovie;
 import com.once2go.ttv.R;
 
 import java.util.List;
@@ -15,9 +15,9 @@ import java.util.List;
  */
 public class MovieAdapter extends RecyclerView.Adapter<MovieViewHolder> {
 
-    private final List<Movie> mMovieList;
+    private final List<ReachMovie> mMovieList;
 
-    public MovieAdapter(List<Movie> movieList) {
+    public MovieAdapter(List<ReachMovie> movieList) {
         if (movieList == null) {
             throw new IllegalArgumentException("List can't be null");
         }

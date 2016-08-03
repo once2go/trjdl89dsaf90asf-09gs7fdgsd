@@ -12,4 +12,6 @@ public class Config {
 
     public static final int DEFAULT_PAGINATION_LIMIT = 10;
     public static final int DEFAULT_PAGINATION_PAGE = 1;
+
+    public static final String DATE_FORMAT_PATTERN = "yyyy-MM-dd'T'HH:mm:ssZZZZZ";
 }

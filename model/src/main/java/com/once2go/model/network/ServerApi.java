@@ -1,6 +1,7 @@
 package com.once2go.model.network;
 
 import com.once2go.model.movies.Movie;
+import com.once2go.model.movies.ReachMovie;
 
 import java.util.List;
 
@@ -20,6 +21,6 @@ public interface ServerApi {
     @GET("movies/popular")
     Observable<List<Movie>> getPopularMovies(@Query("page") int page, @Query("limit") int offset);
 
-
-
+    @GET("movies/popular")
+    Observable<List<ReachMovie>> getPopularMoviesWithExtensions(@Query("extended") String extended, @Query("page") int page, @Query("limit") int offset);
 }

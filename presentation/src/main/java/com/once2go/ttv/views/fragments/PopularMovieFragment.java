@@ -1,5 +1,6 @@
 package com.once2go.ttv.views.fragments;
 
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -27,7 +28,8 @@ import java.util.List;
  */
 public class PopularMovieFragment extends Fragment implements PopularMovieView {
 
-    private static final int ITEMS_IN_ROW = 3;
+    private static final int ITEMS_IN_ROW_PORTRET = 3;
+    private static final int ITEMS_IN_ROW_LANDSCAPE = 5;
     private PopularMovieViewPresenter mPopularMovieViewPresenter;
     private RecyclerView mListView;
     private List<ReachMovie> mItemsList = new ArrayList<>();
@@ -56,7 +58,14 @@ public class PopularMovieFragment extends Fragment implements PopularMovieView {
 
     private void assignViews(View view) {
         mListView = (RecyclerView) view.findViewById(R.id.popular_movie_list_view);
-        final GridLayoutManager layoutManager = new GridLayoutManager(view.getContext(), ITEMS_IN_ROW, LinearLayoutManager.VERTICAL, false);
+        int itemsInRow;
+        int display_mode = getResources().getConfiguration().orientation;
+        if (display_mode == Configuration.ORIENTATION_PORTRAIT) {
+            itemsInRow = ITEMS_IN_ROW_PORTRET;
+        } else {
+            itemsInRow = ITEMS_IN_ROW_LANDSCAPE;
+        }
+        final GridLayoutManager layoutManager = new GridLayoutManager(view.getContext(), itemsInRow, LinearLayoutManager.VERTICAL, false);
         mListView.setLayoutManager(layoutManager);
         mAdapter = new MovieAdapter(mItemsList);
         mListView.setAdapter(mAdapter);
@@ -78,6 +87,11 @@ public class PopularMovieFragment extends Fragment implements PopularMovieView {
         });
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+    }
 
     @Override
     public void onMovieListLoaded(List<Movie> movieList) {

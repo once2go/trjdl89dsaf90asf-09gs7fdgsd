@@ -41,6 +41,7 @@ public class PopularMovieFragment extends Fragment implements PopularMovieView {
     private boolean mEndOfTheList;
     private int mPageCounter;
     private static final int LOAD_ITEMS_OFFSET = 3;
+    private GridLayoutManager mLayoutManager;
 
     @Nullable
     @Override
@@ -72,27 +73,30 @@ public class PopularMovieFragment extends Fragment implements PopularMovieView {
         } else {
             itemsInRow = ITEMS_IN_ROW_LANDSCAPE;
         }
-        final GridLayoutManager layoutManager = new GridLayoutManager(view.getContext(), itemsInRow, LinearLayoutManager.VERTICAL, false);
-        mListView.setLayoutManager(layoutManager);
+        mLayoutManager = new GridLayoutManager(view.getContext(), itemsInRow, LinearLayoutManager.VERTICAL, false);
+        mListView.setLayoutManager(mLayoutManager);
         mAdapter = new MovieAdapter(mItemsList);
         mListView.setAdapter(mAdapter);
-        mListView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                if (!mEndOfTheList && !mItemsList.isEmpty() && dy > 0 && !mLoadingInProgress) {
-                    int visibleItemCount = layoutManager.getChildCount();
-                    int totalItemCount = layoutManager.getItemCount();
-                    int pastVisibleItems = layoutManager.findFirstVisibleItemPosition();
-                    if ((visibleItemCount + pastVisibleItems) + LOAD_ITEMS_OFFSET >= totalItemCount) {
-                        mLoadingInProgress = true;
-                        mPageCounter++;
-                        mPopularMovieViewPresenter.onLoadPopularMovie(mPageCounter);
-                    }
+        mListView.addOnScrollListener(viewScrollListener);
+    }
+
+
+    private RecyclerView.OnScrollListener viewScrollListener = new RecyclerView.OnScrollListener() {
+        @Override
+        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+            super.onScrolled(recyclerView, dx, dy);
+            if (!mEndOfTheList && !mItemsList.isEmpty() && dy > 0 && !mLoadingInProgress) {
+                int visibleItemCount = mLayoutManager.getChildCount();
+                int totalItemCount = mLayoutManager.getItemCount();
+                int pastVisibleItems = mLayoutManager.findFirstVisibleItemPosition();
+                if ((visibleItemCount + pastVisibleItems) + LOAD_ITEMS_OFFSET >= totalItemCount) {
+                    mLoadingInProgress = true;
+                    mPageCounter++;
+                    mPopularMovieViewPresenter.onLoadPopularMovie(mPageCounter);
                 }
             }
-        });
-    }
+        }
+    };
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
@@ -133,6 +137,7 @@ public class PopularMovieFragment extends Fragment implements PopularMovieView {
 
     @Override
     public void onDestroy() {
+        mListView.removeOnScrollListener(viewScrollListener);
         if (mPopularMovieViewPresenter != null) {
             mPopularMovieViewPresenter.destroy();
             mPopularMovieViewPresenter = null;

@@ -1,12 +1,15 @@
 package com.once2go.model.network;
 
+import com.once2go.model.SearchResultMovie;
 import com.once2go.model.movies.Movie;
 import com.once2go.model.movies.ReachMovie;
 
 import java.util.List;
 
 import retrofit2.http.GET;
+import retrofit2.http.Path;
 import retrofit2.http.Query;
+import retrofit2.http.QueryMap;
 import rx.Observable;
 
 /**
@@ -23,4 +26,8 @@ public interface ServerApi {
 
     @GET("movies/popular")
     Observable<List<ReachMovie>> getPopularMoviesWithExtensions(@Query("extended") String extended, @Query("page") int page, @Query("limit") int offset);
+
+    @GET("search/{type}")
+    Observable<List<SearchResultMovie>> searchMovie(@Path("type") String type, @Query("query") String query);
+
 }

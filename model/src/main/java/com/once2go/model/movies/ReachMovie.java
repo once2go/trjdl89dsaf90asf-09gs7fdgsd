@@ -1,5 +1,7 @@
 package com.once2go.model.movies;
 
+import android.os.Parcel;
+
 import com.google.gson.annotations.SerializedName;
 import com.once2go.model.Config;
 
@@ -113,4 +115,61 @@ public class ReachMovie extends Movie {
     public MovieImages getImages() {
         return mImages;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
+        dest.writeString(this.mTagLine);
+        dest.writeString(this.mOverview);
+        dest.writeString(this.mReleased);
+        dest.writeInt(this.mRuntime);
+        dest.writeString(this.mTrailer);
+        dest.writeString(this.mHomePage);
+        dest.writeDouble(this.mRaiting);
+        dest.writeLong(this.mVotes);
+        dest.writeString(this.mUpdatedAt);
+        dest.writeString(this.mLanguage);
+        dest.writeStringList(this.mAvailableTranslations);
+        dest.writeStringList(this.mGenres);
+        dest.writeString(this.mCertification);
+        dest.writeParcelable(this.mImages, flags);
+    }
+
+    public ReachMovie() {
+    }
+
+    protected ReachMovie(Parcel in) {
+        super(in);
+        this.mTagLine = in.readString();
+        this.mOverview = in.readString();
+        this.mReleased = in.readString();
+        this.mRuntime = in.readInt();
+        this.mTrailer = in.readString();
+        this.mHomePage = in.readString();
+        this.mRaiting = in.readDouble();
+        this.mVotes = in.readLong();
+        this.mUpdatedAt = in.readString();
+        this.mLanguage = in.readString();
+        this.mAvailableTranslations = in.createStringArrayList();
+        this.mGenres = in.createStringArrayList();
+        this.mCertification = in.readString();
+        this.mImages = in.readParcelable(MovieImages.class.getClassLoader());
+    }
+
+    public static final Creator<ReachMovie> CREATOR = new Creator<ReachMovie>() {
+        @Override
+        public ReachMovie createFromParcel(Parcel source) {
+            return new ReachMovie(source);
+        }
+
+        @Override
+        public ReachMovie[] newArray(int size) {
+            return new ReachMovie[size];
+        }
+    };
 }

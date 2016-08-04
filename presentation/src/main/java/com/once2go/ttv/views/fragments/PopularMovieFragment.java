@@ -28,15 +28,18 @@ import java.util.List;
  */
 public class PopularMovieFragment extends Fragment implements PopularMovieView {
 
+    private static final String ITEM_LIST_BUNDLE_KEY = "ITEM_LIST_BUNDLE_KEY";
+    private static final String PAGE_COUNTER_BUNDLE_KEY = "PAGE_COUNTER_BUNDLE_KEY";
+
     private static final int ITEMS_IN_ROW_PORTRET = 3;
     private static final int ITEMS_IN_ROW_LANDSCAPE = 5;
     private PopularMovieViewPresenter mPopularMovieViewPresenter;
     private RecyclerView mListView;
-    private List<ReachMovie> mItemsList = new ArrayList<>();
+    private ArrayList<ReachMovie> mItemsList = new ArrayList<>();
     private MovieAdapter mAdapter;
     private boolean mLoadingInProgress;
     private boolean mEndOfTheList;
-    private int pageCounter;
+    private int mPageCounter;
     private static final int LOAD_ITEMS_OFFSET = 3;
 
     @Nullable
@@ -46,15 +49,19 @@ public class PopularMovieFragment extends Fragment implements PopularMovieView {
         assignViews(view);
         mPopularMovieViewPresenter = DaggerPopularMovieComponent.create().getPresenter();
         mPopularMovieViewPresenter.setView(this);
+        if (savedInstanceState != null) {
+            ArrayList<ReachMovie> savedList = savedInstanceState.getParcelableArrayList(ITEM_LIST_BUNDLE_KEY);
+            mPageCounter = savedInstanceState.getInt(PAGE_COUNTER_BUNDLE_KEY);
+            mItemsList.clear();
+            mItemsList.addAll(savedList);
+            mAdapter.notifyDataSetChanged();
+        } else {
+            mPageCounter++;
+            mPopularMovieViewPresenter.onLoadPopularMovie(mPageCounter);
+        }
         return view;
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        pageCounter++;
-        mPopularMovieViewPresenter.onLoadPopularMovie(pageCounter);
-    }
 
     private void assignViews(View view) {
         mListView = (RecyclerView) view.findViewById(R.id.popular_movie_list_view);
@@ -79,8 +86,8 @@ public class PopularMovieFragment extends Fragment implements PopularMovieView {
                     int pastVisibleItems = layoutManager.findFirstVisibleItemPosition();
                     if ((visibleItemCount + pastVisibleItems) + LOAD_ITEMS_OFFSET >= totalItemCount) {
                         mLoadingInProgress = true;
-                        pageCounter++;
-                        mPopularMovieViewPresenter.onLoadPopularMovie(pageCounter);
+                        mPageCounter++;
+                        mPopularMovieViewPresenter.onLoadPopularMovie(mPageCounter);
                     }
                 }
             }
@@ -89,8 +96,9 @@ public class PopularMovieFragment extends Fragment implements PopularMovieView {
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
+        outState.putParcelableArrayList(ITEM_LIST_BUNDLE_KEY, mItemsList);
+        outState.putInt(PAGE_COUNTER_BUNDLE_KEY, mPageCounter);
         super.onSaveInstanceState(outState);
-
     }
 
     @Override

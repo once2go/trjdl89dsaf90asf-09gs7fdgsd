@@ -61,7 +61,7 @@ public class SearchResultFragment extends Fragment implements SearchResultView {
     public void onSearchResultReceived(List<SearchResultMovie> result) {
         StringBuilder builder = new StringBuilder();
         for (SearchResultMovie movie : result) {
-            builder.append(movie.getMovie().getTitle());
+            builder.append(movie.getMovie().getOverview());
             builder.append("\n");
         }
         mTestTextView.setText(builder.toString());

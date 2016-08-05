@@ -20,6 +20,6 @@ public class GetPopularMovieWithExtensionUseCase extends PaginatedUseCase<List<R
 
     @Override
     protected Observable<List<ReachMovie>> buildUseCaseObservable() {
-        return serverApi.getPopularMoviesWithExtensions(mObjectExtension.value(), page, limit);
+        return serverApi.getPopularMovies(mObjectExtension.value(), page, limit);
     }
 }

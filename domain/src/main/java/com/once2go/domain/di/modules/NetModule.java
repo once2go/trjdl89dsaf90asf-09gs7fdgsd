@@ -59,6 +59,8 @@ public class NetModule {
                         .addHeader("Content-Type", "application/json")
                         .addHeader("trakt-api-version", String.valueOf(Config.API_VERSION))
                         .addHeader("trakt-api-key", mClientId).build();
+                String log = chain.proceed(request).body().string();
+                Log.e("tes", log);
                 return chain.proceed(request);
             }
         });

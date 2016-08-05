@@ -1,7 +1,7 @@
 package com.once2go.model;
 
 import com.google.gson.annotations.SerializedName;
-import com.once2go.model.movies.Movie;
+import com.once2go.model.movies.ReachMovie;
 
 /**
  * Created by once2go on 04.08.16.
@@ -15,7 +15,7 @@ public class SearchResultMovie {
     private double mScore;
 
     @SerializedName("movie")
-    private Movie mMovie;
+    private ReachMovie mMovie;
 
     public String getType() {
         return mType;
@@ -25,7 +25,7 @@ public class SearchResultMovie {
         return mScore;
     }
 
-    public Movie getMovie() {
+    public ReachMovie getMovie() {
         return mMovie;
     }
 }

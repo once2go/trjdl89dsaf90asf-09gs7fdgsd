@@ -25,9 +25,18 @@ public interface ServerApi {
     Observable<List<Movie>> getPopularMovies(@Query("page") int page, @Query("limit") int offset);
 
     @GET("movies/popular")
-    Observable<List<ReachMovie>> getPopularMoviesWithExtensions(@Query("extended") String extended, @Query("page") int page, @Query("limit") int offset);
+    Observable<List<ReachMovie>> getPopularMovies(@Query("extended") String extended, @Query("page") int page, @Query("limit") int offset);
 
     @GET("search/{type}")
     Observable<List<SearchResultMovie>> searchMovie(@Path("type") String type, @Query("query") String query);
+
+    @GET("search/{type}")
+    Observable<List<SearchResultMovie>> searchMovie(@Path("type") String type, @Query("query") String query, @Query("extended") String extended);
+
+    @GET("search/{type}")
+    Observable<List<SearchResultMovie>> searchMovie(@Path("type") String type, @Query("query") String query, @Query("page") int page, @Query("limit") int offset);
+
+    @GET("search/{type}")
+    Observable<List<SearchResultMovie>> searchMovie(@Path("type") String type, @Query("query") String query, @Query("page") int page, @Query("limit") int offset, @Query("extended") String extended);
 
 }

@@ -30,6 +30,6 @@ public class SearchMovieUseCase extends UseCase<List<SearchResultMovie>> {
 
     @Override
     protected Observable<List<SearchResultMovie>> buildUseCaseObservable() {
-        return serverApi.searchMovie(mType, mQuery);
+        return serverApi.searchMovie(mType, mQuery, ObjectExtension.FULL_INFO.value());
     }
 }

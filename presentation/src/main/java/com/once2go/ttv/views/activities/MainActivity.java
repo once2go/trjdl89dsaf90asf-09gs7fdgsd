@@ -2,6 +2,7 @@ package com.once2go.ttv.views.activities;
 
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -12,6 +13,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
+import com.once2go.model.Config;
 import com.once2go.ttv.R;
 import com.once2go.ttv.views.fragments.PopularMovieFragment;
 import com.once2go.ttv.views.fragments.SearchResultFragment;
@@ -82,6 +84,9 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                     .commit();
             mIsSearchState = true;
         }
+        Intent intent = new Intent(Config.SerchBroadcastConfig.INTENT_FILTER);
+        intent.putExtra(Config.SerchBroadcastConfig.INTENT_QUERY_KEY, newText);
+        sendBroadcast(intent);
         return false;
     }
 

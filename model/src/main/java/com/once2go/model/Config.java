@@ -14,4 +14,9 @@ public class Config {
     public static final int DEFAULT_PAGINATION_PAGE = 1;
 
     public static final String DATE_FORMAT_PATTERN = "yyyy-MM-dd'T'HH:mm:ssZZZZZ";
+
+    public static class SerchBroadcastConfig{
+        public static final String INTENT_FILTER = "com.once2go.trakttv.search";
+        public static final String INTENT_QUERY_KEY = "INTENT_QUERY_KEY";
+    }
 }

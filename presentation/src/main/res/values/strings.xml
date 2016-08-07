@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Trakt.tv Movies</string>
+    <string translatable="false" name="app_name">Trakt.tv Movies</string>
     <string name="search_title">Search</string>
     <string name="empty_year_field">Year not found</string>
     <string name="empty_overview_field">Can\'t find overview</string>

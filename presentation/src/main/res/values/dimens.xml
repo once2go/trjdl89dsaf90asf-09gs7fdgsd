@@ -10,4 +10,15 @@
     <dimen name="movie_year_margin">8dp</dimen>
     <dimen name="movie_view_info_padding">4dp</dimen>
     <dimen name="items_padding">8dp</dimen>
+    <dimen name="expanding_botom_of_toolbar_colapsing">94dp</dimen>
+    <dimen name="nested_scroll_top_overlap">78dp</dimen>
+    <dimen name="trailer_floating_button_margin">32dp</dimen>
+    <dimen name="trailer_floating_button_elevation">8dp</dimen>
+    <dimen name="detail_overview_line_spacing">8dp</dimen>
+    <dimen name="detail_card_view_padding">16dp</dimen>
+    <dimen name="overview_text_size">16sp</dimen>
+    <dimen name="detail_header_text_size">22sp</dimen>
+    <dimen name="details_card_margin">8dp</dimen>
+    <dimen name="collapsing_toolbar_height">420dp</dimen>
+    <dimen name="row_item_margin_top">8dp</dimen>
 </resources>

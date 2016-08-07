@@ -43,6 +43,17 @@ public class PopularMovieFragment extends Fragment implements PopularMovieView {
     private static final int LOAD_ITEMS_OFFSET = 3;
     private GridLayoutManager mLayoutManager;
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (savedInstanceState != null) {
+            ArrayList<ReachMovie> savedList = savedInstanceState.getParcelableArrayList(ITEM_LIST_BUNDLE_KEY);
+            mPageCounter = savedInstanceState.getInt(PAGE_COUNTER_BUNDLE_KEY);
+            mItemsList.clear();
+            mItemsList.addAll(savedList);
+        }
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -50,11 +61,7 @@ public class PopularMovieFragment extends Fragment implements PopularMovieView {
         assignViews(view);
         mPopularMovieViewPresenter = DaggerPopularMovieComponent.create().getPresenter();
         mPopularMovieViewPresenter.setView(this);
-        if (savedInstanceState != null) {
-            ArrayList<ReachMovie> savedList = savedInstanceState.getParcelableArrayList(ITEM_LIST_BUNDLE_KEY);
-            mPageCounter = savedInstanceState.getInt(PAGE_COUNTER_BUNDLE_KEY);
-            mItemsList.clear();
-            mItemsList.addAll(savedList);
+        if (!mItemsList.isEmpty()) {
             mAdapter.notifyDataSetChanged();
         } else {
             mPageCounter++;
@@ -112,9 +119,13 @@ public class PopularMovieFragment extends Fragment implements PopularMovieView {
 
     @Override
     public void onReachMovieListLoaded(List<ReachMovie> movieList) {
-        mLoadingInProgress = false;
-        mItemsList.addAll(movieList);
-        mAdapter.notifyDataSetChanged();
+        if (movieList != null && !movieList.isEmpty()) {
+            mLoadingInProgress = false;
+            mItemsList.addAll(movieList);
+            mAdapter.notifyDataSetChanged();
+        } else {
+            mEndOfTheList = true;
+        }
     }
 
     @Override
@@ -137,7 +148,9 @@ public class PopularMovieFragment extends Fragment implements PopularMovieView {
 
     @Override
     public void onDestroy() {
-        mListView.removeOnScrollListener(viewScrollListener);
+        if (mListView != null) {
+            mListView.removeOnScrollListener(viewScrollListener);
+        }
         if (mPopularMovieViewPresenter != null) {
             mPopularMovieViewPresenter.destroy();
             mPopularMovieViewPresenter = null;

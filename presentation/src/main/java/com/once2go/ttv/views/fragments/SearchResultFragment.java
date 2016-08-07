@@ -8,27 +8,20 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.once2go.model.Config;
 import com.once2go.model.SearchResultMovie;
-import com.once2go.model.movies.ReachMovie;
 import com.once2go.ttv.R;
-import com.once2go.ttv.adapters.MovieAdapter;
 import com.once2go.ttv.adapters.MovieSearchAdapter;
 import com.once2go.ttv.presenters.SearchResultViewPresenter;
 import com.once2go.ttv.presenters.di.components.DaggerSearchResultViewComponent;
 import com.once2go.ttv.views.SearchResultView;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,6 +30,11 @@ import java.util.List;
  * Created by once2go on 04.08.16.
  */
 public class SearchResultFragment extends Fragment implements SearchResultView {
+
+
+    private static final String ITEM_LIST_BUNDLE_KEY = "ITEM_LIST_BUNDLE_KEY";
+    private static final String PAGE_COUNTER_BUNDLE_KEY = "PAGE_COUNTER_BUNDLE_KEY";
+    private static final String QUERY_BUNDLE_KEY = "QUERY_BUNDLE_KEY";
 
     private SearchResultViewPresenter mSearchViewPresenter;
 
@@ -54,16 +52,30 @@ public class SearchResultFragment extends Fragment implements SearchResultView {
     private BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            mPageCounter = 1;
-            mEndOfTheList = false;
-            mItemsList.clear();
             String value = intent.getExtras().getString(Config.SerchBroadcastConfig.INTENT_QUERY_KEY);
             mSearchQuery = value;
-            mSearchViewPresenter.onSearch(SEARCH_TYPE, mSearchQuery, mPageCounter);
+            if (!TextUtils.isEmpty(value)) {
+                mPageCounter = 1;
+                mEndOfTheList = false;
+                mItemsList.clear();
+                mSearchViewPresenter.onSearch(SEARCH_TYPE, mSearchQuery, mPageCounter);
+            }
         }
     };
     private IntentFilter mSearchIntentFilter = new IntentFilter(Config.SerchBroadcastConfig.INTENT_FILTER);
 
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (savedInstanceState != null) {
+            ArrayList<SearchResultMovie> savedList = savedInstanceState.getParcelableArrayList(ITEM_LIST_BUNDLE_KEY);
+            mPageCounter = savedInstanceState.getInt(PAGE_COUNTER_BUNDLE_KEY);
+            mSearchQuery = savedInstanceState.getString(QUERY_BUNDLE_KEY);
+            mItemsList.addAll(savedList);
+        }
+
+    }
 
     @Nullable
     @Override
@@ -72,6 +84,9 @@ public class SearchResultFragment extends Fragment implements SearchResultView {
         assignViews(view);
         mSearchViewPresenter = DaggerSearchResultViewComponent.create().getPresenter();
         mSearchViewPresenter.setView(this);
+        if (!mItemsList.isEmpty()) {
+            mAdapter.notifyDataSetChanged();
+        }
         return view;
     }
 
@@ -101,6 +116,14 @@ public class SearchResultFragment extends Fragment implements SearchResultView {
             }
         }
     };
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putParcelableArrayList(ITEM_LIST_BUNDLE_KEY, mItemsList);
+        outState.putInt(PAGE_COUNTER_BUNDLE_KEY, mPageCounter);
+        outState.putString(QUERY_BUNDLE_KEY, mSearchQuery);
+        super.onSaveInstanceState(outState);
+    }
 
     @Override
     public void onSearchResultReceived(List<SearchResultMovie> result) {
@@ -142,7 +165,9 @@ public class SearchResultFragment extends Fragment implements SearchResultView {
 
     @Override
     public void onDestroy() {
-        mListView.removeOnScrollListener(viewScrollListener);
+        if (mListView != null) {
+            mListView.removeOnScrollListener(viewScrollListener);
+        }
         if (mSearchViewPresenter != null) {
             mSearchViewPresenter.destroy();
             mSearchViewPresenter = null;

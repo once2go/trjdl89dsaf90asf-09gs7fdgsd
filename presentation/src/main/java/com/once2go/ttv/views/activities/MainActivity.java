@@ -8,6 +8,7 @@ import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -21,10 +22,12 @@ import com.once2go.ttv.views.fragments.SearchResultFragment;
 public class MainActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
 
     private static final String LOG_TAG = MainActivity.class.getSimpleName();
+    private static final String SEARCH_QUERY_BUNDLE_KEY = "SEARCH_QUERY_BUNDLE_KEY";
 
     private PopularMovieFragment mPopularMovieFragment;
     private SearchResultFragment mSearchResultFragment;
     private boolean mIsSearchState;
+    private String mLastSearchQuery;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +40,8 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.main_activity_content_container, mPopularMovieFragment).addToBackStack(null)
                     .commit();
+        } else {
+            mLastSearchQuery = savedInstanceState.getString(SEARCH_QUERY_BUNDLE_KEY);
         }
     }
 
@@ -57,6 +62,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             @Override
             public boolean onMenuItemActionCollapse(MenuItem item) {
                 mIsSearchState = false;
+                mLastSearchQuery = "";
                 onBackPressed();
                 return true;
             }
@@ -66,12 +72,26 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                 return true;
             }
         });
+        if (!TextUtils.isEmpty(mLastSearchQuery)) {
+            MenuItemCompat.expandActionView(menu.findItem(R.id.search));
+            searchView.setOnQueryTextListener(null);
+            searchView.setQuery(mLastSearchQuery, false);
+            searchView.setOnQueryTextListener(this);
+            mIsSearchState = true;
+        }
+
         return true;
     }
 
     @Override
     public boolean onQueryTextSubmit(String query) {
         return false;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putString(SEARCH_QUERY_BUNDLE_KEY, mLastSearchQuery);
+        super.onSaveInstanceState(outState);
     }
 
     @Override
@@ -84,10 +104,20 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                     .commit();
             mIsSearchState = true;
         }
+        if (!TextUtils.isEmpty(newText)) {
+            mLastSearchQuery = newText;
+        }
         Intent intent = new Intent(Config.SerchBroadcastConfig.INTENT_FILTER);
         intent.putExtra(Config.SerchBroadcastConfig.INTENT_QUERY_KEY, newText);
         sendBroadcast(intent);
         return false;
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        if (getSupportFragmentManager().getBackStackEntryCount() == 0) {
+            finish();
+        }
+    }
 }

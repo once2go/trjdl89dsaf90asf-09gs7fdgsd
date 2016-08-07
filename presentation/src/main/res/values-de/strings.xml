@@ -1,0 +1,5 @@
+<resources>
+    <string name="search_title">Suche</string>
+    <string name="empty_year_field">Jahr nicht gefunden</string>
+    <string name="empty_overview_field">Kann nicht Übersicht finden</string>
+</resources>

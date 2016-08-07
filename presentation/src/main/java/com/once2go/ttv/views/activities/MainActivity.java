@@ -106,10 +106,10 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         }
         if (!TextUtils.isEmpty(newText)) {
             mLastSearchQuery = newText;
+            Intent intent = new Intent(Config.SerchBroadcastConfig.INTENT_FILTER);
+            intent.putExtra(Config.SerchBroadcastConfig.INTENT_QUERY_KEY, newText);
+            sendBroadcast(intent);
         }
-        Intent intent = new Intent(Config.SerchBroadcastConfig.INTENT_FILTER);
-        intent.putExtra(Config.SerchBroadcastConfig.INTENT_QUERY_KEY, newText);
-        sendBroadcast(intent);
         return false;
     }
 

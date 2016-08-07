@@ -45,12 +45,14 @@ public class SearchResultViewPresenterImpl implements SearchResultViewPresenter 
         if (limit != Flag.EMPTY_VALUE && page != Flag.EMPTY_VALUE) {
             mSearchMovieUseCase.setQueryCredentials(page, limit);
         }
+        mSearchResultView.indicateProgress();
         mSearchMovieUseCase.execute(new Subscriber<List<SearchResultMovie>>() {
             @Override
             public void onCompleted() {
                 if (mSearchMovieUseCase != null) {
                     mSearchMovieUseCase.unsubscribe();
                     mSearchMovieUseCase = null;
+                    mSearchResultView.disableIndication();
                 }
             }
 
@@ -58,6 +60,7 @@ public class SearchResultViewPresenterImpl implements SearchResultViewPresenter 
             public void onError(Throwable e) {
                 if (mSearchResultView != null) {
                     mSearchResultView.showError(e.getMessage());
+                    mSearchResultView.disableIndication();
                 }
             }
 
@@ -65,6 +68,7 @@ public class SearchResultViewPresenterImpl implements SearchResultViewPresenter 
             public void onNext(List<SearchResultMovie> searchResultMovies) {
                 if (mSearchResultView != null) {
                     mSearchResultView.onSearchResultReceived(searchResultMovies);
+                    mSearchResultView.disableIndication();
                 }
             }
         });

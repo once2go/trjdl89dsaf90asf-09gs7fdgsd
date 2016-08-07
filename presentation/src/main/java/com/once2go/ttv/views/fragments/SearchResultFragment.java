@@ -138,12 +138,12 @@ public class SearchResultFragment extends Fragment implements SearchResultView {
 
     @Override
     public void indicateProgress() {
-
+        mAdapter.indicateLoading(true);
     }
 
     @Override
     public void disableIndication() {
-
+        mAdapter.indicateLoading(false);
     }
 
     @Override

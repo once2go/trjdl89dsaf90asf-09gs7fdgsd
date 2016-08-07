@@ -16,6 +16,7 @@
         <TextView
             android:id="@+id/search_movie_title"
             style="@style/MovieHeaderStyle"
+            android:padding="@dimen/items_padding"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center" />
@@ -45,6 +46,7 @@
                 android:layout_weight="1">
 
                 <ImageView
+                    android:padding="@dimen/items_padding"
                     android:id="@+id/search_movie_img_preview"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

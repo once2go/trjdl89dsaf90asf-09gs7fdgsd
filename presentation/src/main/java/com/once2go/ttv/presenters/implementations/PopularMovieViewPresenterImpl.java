@@ -59,12 +59,14 @@ public class PopularMovieViewPresenterImpl implements PopularMovieViewPresenter 
         if (limit != Flag.EMPTY_VALUE && page != Flag.EMPTY_VALUE) {
             mGetPopularMoviesUseCase.setQueryCredentials(page, limit);
         }
+        mPopularMovieView.indicateProgress();
         mGetPopularMoviesUseCase.execute(new Subscriber<List<ReachMovie>>() {
             @Override
             public void onCompleted() {
                 if (mGetPopularMoviesUseCase != null) {
                     mGetPopularMoviesUseCase.unsubscribe();
                     mGetPopularMoviesUseCase = null;
+                    mPopularMovieView.disableIndication();
                 }
             }
 
@@ -72,6 +74,7 @@ public class PopularMovieViewPresenterImpl implements PopularMovieViewPresenter 
             public void onError(Throwable e) {
                 if (mPopularMovieView != null) {
                     mPopularMovieView.showError(e.getMessage());
+                    mPopularMovieView.disableIndication();
                 }
             }
 
@@ -79,6 +82,7 @@ public class PopularMovieViewPresenterImpl implements PopularMovieViewPresenter 
             public void onNext(List<ReachMovie> movies) {
                 if (mPopularMovieView != null) {
                     mPopularMovieView.onReachMovieListLoaded(movies);
+                    mPopularMovieView.disableIndication();
                 }
             }
         });

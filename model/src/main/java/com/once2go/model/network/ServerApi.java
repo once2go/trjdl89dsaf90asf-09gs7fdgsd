@@ -37,6 +37,6 @@ public interface ServerApi {
     Observable<List<SearchResultMovie>> searchMovie(@Path("type") String type, @Query("query") String query, @Query("page") int page, @Query("limit") int offset);
 
     @GET("search/{type}")
-    Observable<List<SearchResultMovie>> searchMovie(@Path("type") String type, @Query("query") String query, @Query("page") int page, @Query("limit") int offset, @Query("extended") String extended);
+    Observable<List<SearchResultMovie>> searchMovie(@Path("type") String type, @Query("query") String query, @Query("extended") String extended, @Query("page") int page, @Query("limit") int offset);
 
 }

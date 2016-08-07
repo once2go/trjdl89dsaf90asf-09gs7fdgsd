@@ -19,7 +19,7 @@ public class MovieSearchAdapter extends RecyclerView.Adapter<MovieSearchViewHold
     private List<SearchResultMovie> mItemsList;
 
     public MovieSearchAdapter(List<SearchResultMovie> itemsList) {
-        if (mItemsList == null) {
+        if (itemsList == null) {
             throw new IllegalArgumentException("Search result list can't be null");
         }
         mItemsList = itemsList;

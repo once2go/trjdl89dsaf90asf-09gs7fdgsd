@@ -3,6 +3,7 @@ package com.once2go.ttv.presenters.implementations;
 import android.support.annotation.NonNull;
 
 import com.once2go.domain.interactors.SearchMovieUseCase;
+import com.once2go.model.Flag;
 import com.once2go.model.SearchResultMovie;
 import com.once2go.ttv.presenters.SearchResultViewPresenter;
 import com.once2go.ttv.views.SearchResultView;
@@ -22,21 +23,49 @@ public class SearchResultViewPresenterImpl implements SearchResultViewPresenter 
 
     @Override
     public void onSearch(String type, String query) {
+        search(type, query, Flag.EMPTY_VALUE, Flag.EMPTY_VALUE);
+    }
+
+    @Override
+    public void onSearch(String type, String query, int page) {
+        search(type, query, page, Flag.EMPTY_VALUE);
+    }
+
+
+    @Override
+    public void onSearch(String type, String query, int page, int limit) {
+        search(type, query, page, limit);
+    }
+
+    private void search(String type, String query, int page, int limit) {
         mSearchMovieUseCase = new SearchMovieUseCase(type, query);
+        if (limit == Flag.EMPTY_VALUE && page != Flag.EMPTY_VALUE) {
+            mSearchMovieUseCase.setQueryCredentials(page);
+        }
+        if (limit != Flag.EMPTY_VALUE && page != Flag.EMPTY_VALUE) {
+            mSearchMovieUseCase.setQueryCredentials(page, limit);
+        }
         mSearchMovieUseCase.execute(new Subscriber<List<SearchResultMovie>>() {
             @Override
             public void onCompleted() {
-
+                if (mSearchMovieUseCase != null) {
+                    mSearchMovieUseCase.unsubscribe();
+                    mSearchMovieUseCase = null;
+                }
             }
 
             @Override
             public void onError(Throwable e) {
-                mSearchResultView.showError(e.getMessage());
+                if (mSearchResultView != null) {
+                    mSearchResultView.showError(e.getMessage());
+                }
             }
 
             @Override
             public void onNext(List<SearchResultMovie> searchResultMovies) {
-                mSearchResultView.onSearchResultReceived(searchResultMovies);
+                if (mSearchResultView != null) {
+                    mSearchResultView.onSearchResultReceived(searchResultMovies);
+                }
             }
         });
     }
@@ -58,6 +87,10 @@ public class SearchResultViewPresenterImpl implements SearchResultViewPresenter 
 
     @Override
     public void destroy() {
-
+        if (mSearchMovieUseCase != null) {
+            mSearchMovieUseCase.unsubscribe();
+            mSearchMovieUseCase = null;
+        }
+        mSearchResultView = null;
     }
 }

@@ -12,7 +12,7 @@ import rx.Observable;
 /**
  * Created by once2go on 04.08.16.
  */
-public class SearchMovieUseCase extends UseCase<List<SearchResultMovie>> {
+public class SearchMovieUseCase extends PaginatedUseCase<List<SearchResultMovie>> {
 
     private String mType;
     private String mQuery;
@@ -30,6 +30,6 @@ public class SearchMovieUseCase extends UseCase<List<SearchResultMovie>> {
 
     @Override
     protected Observable<List<SearchResultMovie>> buildUseCaseObservable() {
-        return serverApi.searchMovie(mType, mQuery, ObjectExtension.FULL_INFO.value());
+        return serverApi.searchMovie(mType, mQuery, ObjectExtension.FULL_INFO.value(), page, limit);
     }
 }
